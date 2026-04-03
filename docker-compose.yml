@@ -1,0 +1,28 @@
+name: safeeyes
+
+services:
+  backend:
+    container_name: safeeyes-backend
+    image: safeeyes-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/data:/app/data  # Adjust if a local DB is in another dir
+    environment:
+      - JWT_SECRET=safeeyes-secret-key-change-in-production
+    restart: unless-stopped
+
+  frontend:
+    container_name: safeeyes-frontend
+    image: safeeyes-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
